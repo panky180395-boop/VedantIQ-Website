@@ -1,0 +1,8 @@
+{
+  "name": "VedantIQ Landing Page",
+  "description": "Landing page for VedantIQ Spoken English and AI Prompt Engineering courses with WhatsApp integration.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
