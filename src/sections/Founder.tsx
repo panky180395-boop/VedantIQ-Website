@@ -1,44 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { FAQS } from '../data';
-import { ChevronDown, Quote, Upload } from 'lucide-react';
-import { saveImage, loadImage } from '../storage';
+import { ChevronDown, Quote } from 'lucide-react';
 
 export function FounderSection() {
-  const [founderImg, setFounderImg] = useState<string>('/founder.jpg');
-  const [imageError, setImageError] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    loadImage('founderPhoto').then((savedImg) => {
-      if (savedImg) {
-        setFounderImg(savedImg);
-        setImageError(false);
-      }
-    });
-  }, []);
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        const base64String = reader.result as string;
-        setFounderImg(base64String);
-        setImageError(false);
-        try {
-          await saveImage('founderPhoto', base64String);
-        } catch (err) {
-          console.error('Failed to save founder photo to IndexedDB', err);
-          alert('Upload failed. Please try a smaller image.');
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const triggerUpload = () => {
-    fileInputRef.current?.click();
-  };
   return (
     <>
       <section id="founder" className="py-24 px-6 bg-[#FCF9F2] overflow-hidden">
@@ -46,43 +10,15 @@ export function FounderSection() {
           <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-[#020F22]/5 border border-[#020F22]/5 overflow-hidden flex flex-col lg:flex-row">
             
             {/* Image Side */}
-            <div className="lg:w-2/5 relative min-h-[500px] bg-[#020F22] group">
-              <div className="absolute inset-0 flex items-center justify-center">
-                 {imageError && (
-                   <div className="text-white/30 flex flex-col items-center gap-4">
-                     <Upload size={48} />
-                     <p className="font-medium tracking-widest text-sm uppercase">Upload Photo</p>
-                   </div>
-                 )}
-              </div>
+            <div className="lg:w-2/5 relative min-h-[500px] bg-[#020F22]">
               <img 
-                src={founderImg} 
+                src="/founder.jpg" 
                 alt="Pankaj Sharma, Founder of VedantIQ" 
-                className={`absolute inset-0 w-full h-full object-cover object-top mix-blend-luminosity group-hover:mix-blend-normal transition-all duration-700 ${imageError ? 'opacity-0' : 'opacity-90'}`}
-                onError={() => setImageError(true)}
-                onLoad={() => setImageError(false)}
+                className="absolute inset-0 w-full h-full object-cover object-top opacity-90 mix-blend-luminosity hover:mix-blend-normal transition-all duration-700"
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#020F22] via-[#020F22]/20 to-transparent pointer-events-none"></div>
-              
-              {/* Upload Button Overlay */}
-              <div className="absolute top-6 right-6 z-20 transition-opacity duration-300">
-                <input 
-                  type="file" 
-                  ref={fileInputRef} 
-                  onChange={handleImageUpload} 
-                  accept="image/*" 
-                  className="hidden" 
-                />
-                <button 
-                  onClick={triggerUpload}
-                  className="flex items-center gap-2 bg-[#D4AF37] hover:bg-[#c39e2e] text-[#020F22] px-4 py-2 rounded-full font-bold text-sm shadow-xl transition-all"
-                >
-                  <Upload size={16} />
-                  Upload Founder Photo
-                </button>
-              </div>
-
-              <div className="absolute bottom-0 left-0 w-full p-10 z-10 pointer-events-none">
+              <div className="absolute inset-0 bg-gradient-to-t from-[#020F22] via-[#020F22]/20 to-transparent"></div>
+              <div className="absolute bottom-0 left-0 w-full p-10 z-10">
                 <h3 className="text-4xl font-extrabold text-white mb-2">Pankaj Sharma</h3>
                 <p className="text-[#D4AF37] font-bold text-xl uppercase tracking-wider">Founder, VedantIQ</p>
               </div>

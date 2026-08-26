@@ -1,46 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Menu, X, MessageCircle, Phone, Upload } from 'lucide-react';
+import React, { useState } from 'react';
+import { Menu, X, MessageCircle, Phone } from 'lucide-react';
 import { WA_NUM_1, WA_NUM_2, getWaUrl } from '../data';
-import { saveImage, loadImage } from '../storage';
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [logoImg, setLogoImg] = useState<string>('/logo.png');
-  const [logoError, setLogoError] = useState(false);
-  const logoInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    loadImage('siteLogo').then((savedLogo) => {
-      if (savedLogo) {
-        setLogoImg(savedLogo);
-        setLogoError(false);
-      }
-    });
-  }, []);
-
-  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        const base64String = reader.result as string;
-        setLogoImg(base64String);
-        setLogoError(false);
-        try {
-          await saveImage('siteLogo', base64String);
-        } catch (err) {
-          console.error('Failed to save logo to IndexedDB', err);
-          alert('Upload failed. Please try a smaller image.');
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const triggerLogoUpload = (e: React.MouseEvent) => {
-    e.preventDefault();
-    logoInputRef.current?.click();
-  };
 
   const navLinks = [
     { name: 'Home', href: '#home' },
@@ -73,33 +36,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {/* Main Nav */}
         <nav className="w-full bg-[#FCF9F2]/95 backdrop-blur-md border-b border-[#020F22]/10 transition-all duration-300">
           <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex flex-col items-center">
-                <div className="relative group/logo cursor-pointer bg-slate-100 rounded-full border-2 border-dashed border-[#D4AF37] flex items-center justify-center h-12 w-12 overflow-hidden" onClick={triggerLogoUpload}>
-                  <img 
-                    src={logoImg} 
-                    alt="VedantIQ Logo" 
-                    className={`h-full w-full object-cover transition-all ${logoError ? 'hidden' : 'block'}`}
-                    onError={() => setLogoError(true)}
-                    onLoad={() => setLogoError(false)}
-                  />
-                  {logoError && <Upload size={16} className="text-slate-400" />}
-                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/logo:opacity-100 flex items-center justify-center transition-opacity">
-                    <Upload size={16} className="text-white" />
-                  </div>
-                </div>
-                <input 
-                  type="file" 
-                  ref={logoInputRef} 
-                  onChange={handleLogoUpload} 
-                  accept="image/*" 
-                  className="hidden" 
-                />
-              </div>
-              <a href="#home" className="flex flex-col group">
+            <a href="#home" className="flex items-center gap-3 group">
+              <img 
+                src="/logo.png" 
+                alt="VedantIQ Logo" 
+                className="h-12 w-12 rounded-full object-cover shadow-sm border border-[#020F22]/10 group-hover:border-[#D4AF37] transition-colors"
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+              />
+              <div className="flex flex-col">
                 <span className="text-2xl font-extrabold tracking-tight text-[#020F22]">Vedant<span className="text-[#D4AF37]">IQ</span></span>
-              </a>
-            </div>
+              </div>
+            </a>
 
             {/* Desktop Nav */}
             <div className="hidden lg:flex items-center gap-8">
@@ -164,21 +111,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
             <div className="flex items-center gap-4">
-              <div className="flex flex-col items-center">
-                <div className="relative group/footer-logo cursor-pointer bg-slate-100 rounded-full border-2 border-dashed border-[#D4AF37] flex items-center justify-center h-16 w-16 overflow-hidden" onClick={triggerLogoUpload}>
-                  <img 
-                    src={logoImg} 
-                    alt="VedantIQ Logo" 
-                    className={`h-full w-full object-cover transition-all ${logoError ? 'hidden' : 'block'}`}
-                    onError={() => setLogoError(true)}
-                    onLoad={() => setLogoError(false)}
-                  />
-                  {logoError && <Upload size={20} className="text-slate-400" />}
-                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/footer-logo:opacity-100 flex items-center justify-center transition-opacity">
-                    <Upload size={20} className="text-white" />
-                  </div>
-                </div>
-              </div>
+              <img 
+                src="/logo.png" 
+                alt="VedantIQ Logo" 
+                className="h-16 w-16 rounded-full object-cover border-2 border-[#D4AF37]"
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+              />
               <div>
                 <span className="text-4xl font-extrabold tracking-tight text-white">Vedant<span className="text-[#D4AF37]">IQ</span></span>
                 <p className="text-[#D4AF37] font-bold tracking-widest text-xs uppercase mt-1">Speak. Express. Succeed.</p>
